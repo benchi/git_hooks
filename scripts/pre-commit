@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# An git pre-commit hook to lint shell scripts.
+
+if [ -z "$ARG_MAX" ]
+then
+	#expr MAX_FILES=$ARG_MAX - 5
+	export MAX_FILES=45
+else
+	export MAX_FILES=45
+fi
+
+command -v shellcheck >/dev/null 2>&1 || { echo >&2 "I require shellcheck but it's not installed.  Aborting."; exit 1; }
+
+git diff --cached --name-only | grep "\.sh" | xargs -n $MAX_FILES shellcheck -S error -f json >/dev/null 2>&1
+
+if [ $? -eq 1 ]
+then
+  git diff --cached --name-only | grep "\.sh" | xargs -n $MAX_FILES shellcheck -S error
+  echo "You cannot commit this change because you need to fix lint errors in your script."
+  exit 1
+else
+  exit 0
+fi
+
+
