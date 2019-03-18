@@ -10,8 +10,9 @@ else
 	export MAX_FILES=45
 fi
 
-command -v shellcheck >/dev/null 2>&1 || { echo >&2 "I require shellcheck but it's not installed.  Aborting."; exit 1; }
+command -v shellcheck >/dev/null 2>&1 || { echo >&2 "I require shellcheck but it's not installed. https://github.com/koalaman/shellcheck  Aborting."; exit 1; }
 
+# Uses https://github.com/koalaman/shellcheck
 git diff --cached --name-only | grep "\.sh" | xargs -n $MAX_FILES shellcheck -S error -f json >/dev/null 2>&1
 
 if [ $? -eq 1 ]
